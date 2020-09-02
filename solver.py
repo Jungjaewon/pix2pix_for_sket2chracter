@@ -136,6 +136,9 @@ class Solver(object):
         data_iter = iter(data_loader)
         _, fixed_color, fixed_sketch = next(data_iter)
 
+        fixed_sketch = fixed_sketch.to(self.gpu)
+        fixed_color = fixed_color.to(self.gpu)
+
         # Learning rate cache for decaying.
         g_lr = self.g_lr
         d_lr = self.d_lr
