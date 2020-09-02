@@ -205,7 +205,7 @@ class Solver(object):
                 if (i + 1) % self.log_step == 0:
                     et = time.time() - start_time
                     et = str(datetime.timedelta(seconds=et))[:-7]
-                    log = "Elapsed [{}], Iteration [{}/{}]".format(et, i + 1, iterations)
+                    log = "Epoch [{}/{}], Elapsed [{}], Iteration [{}/{}]".format(e+1, self.epoch, et, i + 1, iterations)
                     for tag, value in loss_dict.items():
                         log += ", {}: {:.4f}".format(tag, value)
                     print(log)
