@@ -1,7 +1,9 @@
 import torch.nn as nn
+import torch
 
 from block import ResidualBlockDown
 from block import ResidualBlockUp
+
 
 class Generator(nn.Module):
     """Generator network. Conv : W = (W - F + 2P) /S + 1 / TransPosed : W = (Win - 1) * S - 2P + F + OutP"""
@@ -24,6 +26,7 @@ class Generator(nn.Module):
 
     def forward(self, x):
         return self.main(x)
+
 
 class Discriminator(nn.Module):
     """Discriminator network with PatchGAN.

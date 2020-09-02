@@ -4,7 +4,7 @@ MODEL_CONFIG:
 
 TRAINING_CONFIG:
 
-  EPOCH: 10
+  EPOCH: 200
   BATCH_SIZE: 1
 
   # lr and lambda
@@ -45,7 +45,8 @@ TRAINING_CONFIG:
 
   SAMPLE_STEP : 1 # epoch based
   LOG_STEP : 100 # iteration based
-  SAVE_STEP : 1 # epoch based
+  SAVE_STEP : 5 # epoch based
+  SAVE_START : 150
   LR_DECAY_STEP : 20
 
 TEST_CONFIG:

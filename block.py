@@ -18,6 +18,7 @@ class ResidualBlock(nn.Module):
     def forward(self, x):
         return x + self.main(x)
 
+
 class ResidualBlockUp(nn.Module):
     """Residual Block with some normalization. Conv : W = (W - F + 2P) /S + 1 / TransPosed : W = (Win - 1) * S - 2P + F + OutP"""
     def __init__(self, dim_in, dim_out):
@@ -25,16 +26,16 @@ class ResidualBlockUp(nn.Module):
 
         self.stream1 = nn.Sequential(
             nn.UpsamplingBilinear2d(scale_factor=2),
-            nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1, bias=False)
+            SpectralNorm(nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1, bias=False))
         )
         self.stream2 = nn.Sequential(
             nn.BatchNorm2d(dim_in, affine=True, track_running_stats=True),
             nn.ReLU(),
             nn.UpsamplingBilinear2d(scale_factor=2),
-            nn.Conv2d(dim_in, dim_in, kernel_size=3, stride=1, padding=1, bias=False),
+            SpectralNorm(nn.Conv2d(dim_in, dim_in, kernel_size=3, stride=1, padding=1, bias=False)),
             nn.BatchNorm2d(dim_in, affine=True, track_running_stats=True),
             nn.ReLU(),
-            nn.Conv2d(dim_in, dim_out, kernel_size=3, stride=1, padding=1, bias=False),
+            SpectralNorm(nn.Conv2d(dim_in, dim_out, kernel_size=3, stride=1, padding=1, bias=False)),
         )
 
     def forward(self, x):
@@ -60,6 +61,7 @@ class ResidualBlockDown(nn.Module):
 
     def forward(self, x):
         return self.stream1(x) + self.stream2(x)
+
 
 class NoiseBlock(nn.Module):
     """https://pytorch.org/docs/stable/torch.html?highlight=rand#torch.randn"""

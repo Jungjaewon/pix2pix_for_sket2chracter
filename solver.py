@@ -54,10 +54,11 @@ class Solver(object):
         self.model_dir  = os.path.join(self.train_dir, config['TRAINING_CONFIG']['MODEL_DIR'])
 
         # Steps
-        self.log_step      = config['TRAINING_CONFIG']['LOG_STEP']
-        self.sample_step   = config['TRAINING_CONFIG']['SAMPLE_STEP']
-        self.save_step     = config['TRAINING_CONFIG']['SAVE_STEP']
-        self.lr_decay_step = config['TRAINING_CONFIG']['LR_DECAY_STEP']
+        self.log_step       = config['TRAINING_CONFIG']['LOG_STEP']
+        self.sample_step    = config['TRAINING_CONFIG']['SAMPLE_STEP']
+        self.save_step      = config['TRAINING_CONFIG']['SAVE_STEP']
+        self.save_start     = config['TRAINING_CONFIG']['SAVE_START']
+        self.lr_decay_step  = config['TRAINING_CONFIG']['LR_DECAY_STEP']
 
         self.build_model()
 
@@ -221,7 +222,7 @@ class Solver(object):
                     save_image(self.denorm(x_concat.data.cpu()), sample_path, nrow=1, padding=0)
                     print('Saved real and fake images into {}...'.format(sample_path))
             # Save model checkpoints.
-            if (e + 1) % self.save_step == 0:
+            if (e + 1) % self.save_step == 0 and (e + 1) >= self.save_start:
                 G_path = os.path.join(self.model_dir, '{}-G.ckpt'.format(e + 1))
                 D_path = os.path.join(self.model_dir, '{}-D.ckpt'.format(e + 1))
                 torch.save(self.G.state_dict(), G_path)
