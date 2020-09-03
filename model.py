@@ -5,6 +5,7 @@ from block import ResidualBlockDown
 from block import ResidualBlockUp
 
 
+
 class Generator(nn.Module):
     """Generator network. Conv : W = (W - F + 2P) /S + 1 / TransPosed : W = (Win - 1) * S - 2P + F + OutP"""
     def __init__(self, spec_norm=False):
