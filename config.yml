@@ -4,8 +4,8 @@ MODEL_CONFIG:
 
 TRAINING_CONFIG:
 
-  EPOCH: 200
-  BATCH_SIZE: 1
+  EPOCH: 800
+  BATCH_SIZE: 16
 
   # lr and lambda
   G_LR : 10e-7
@@ -14,7 +14,7 @@ TRAINING_CONFIG:
   LAMBDA_G_RECON : 1
   LAMBDA_D_FAKE  : 1
   LAMBDA_D_REAL  : 1
-  LAMBDA_GP : 10000
+  LAMBDA_GP : 20000
 
   # Optimizer
   OPTIM : ADAM
@@ -49,8 +49,8 @@ TRAINING_CONFIG:
 
   SAMPLE_STEP : 1 # epoch based
   LOG_STEP : 100 # iteration based
-  SAVE_STEP : 5 # epoch based
-  SAVE_START : 150
+  SAVE_STEP : 10 # epoch based
+  SAVE_START : 300
   LR_DECAY_STEP : 20
 
 TEST_CONFIG:
