@@ -21,22 +21,37 @@ class ResidualBlock(nn.Module):
 
 class ResidualBlockUp(nn.Module):
     """Residual Block with some normalization. Conv : W = (W - F + 2P) /S + 1 / TransPosed : W = (Win - 1) * S - 2P + F + OutP"""
-    def __init__(self, dim_in, dim_out):
+    def __init__(self, dim_in, dim_out, spec_norm=False):
         super(ResidualBlockUp, self).__init__()
 
-        self.stream1 = nn.Sequential(
-            nn.UpsamplingBilinear2d(scale_factor=2),
-            SpectralNorm(nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1, bias=False))
-        )
-        self.stream2 = nn.Sequential(
-            nn.BatchNorm2d(dim_in, affine=True, track_running_stats=True),
-            nn.ReLU(),
-            nn.UpsamplingBilinear2d(scale_factor=2),
-            SpectralNorm(nn.Conv2d(dim_in, dim_in, kernel_size=3, stride=1, padding=1, bias=False)),
-            nn.BatchNorm2d(dim_in, affine=True, track_running_stats=True),
-            nn.ReLU(),
-            SpectralNorm(nn.Conv2d(dim_in, dim_out, kernel_size=3, stride=1, padding=1, bias=False)),
-        )
+        if spec_norm:
+            self.stream1 = nn.Sequential(
+                nn.UpsamplingBilinear2d(scale_factor=2),
+                SpectralNorm(nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1, bias=False))
+            )
+            self.stream2 = nn.Sequential(
+                nn.BatchNorm2d(dim_in, affine=True, track_running_stats=True),
+                nn.ReLU(),
+                nn.UpsamplingBilinear2d(scale_factor=2),
+                SpectralNorm(nn.Conv2d(dim_in, dim_in, kernel_size=3, stride=1, padding=1, bias=False)),
+                nn.BatchNorm2d(dim_in, affine=True, track_running_stats=True),
+                nn.ReLU(),
+                SpectralNorm(nn.Conv2d(dim_in, dim_out, kernel_size=3, stride=1, padding=1, bias=False)),
+            )
+        else:
+            self.stream1 = nn.Sequential(
+                nn.UpsamplingBilinear2d(scale_factor=2),
+                nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1, bias=False)
+            )
+            self.stream2 = nn.Sequential(
+                nn.BatchNorm2d(dim_in, affine=True, track_running_stats=True),
+                nn.ReLU(),
+                nn.UpsamplingBilinear2d(scale_factor=2),
+                nn.Conv2d(dim_in, dim_in, kernel_size=3, stride=1, padding=1, bias=False),
+                nn.BatchNorm2d(dim_in, affine=True, track_running_stats=True),
+                nn.ReLU(),
+                nn.Conv2d(dim_in, dim_out, kernel_size=3, stride=1, padding=1, bias=False),
+            )
 
     def forward(self, x):
         return self.stream1(x) + self.stream2(x)
@@ -44,20 +59,33 @@ class ResidualBlockUp(nn.Module):
 
 class ResidualBlockDown(nn.Module):
     """Residual Block with some normalization. Conv : W = (W - F + 2P) /S + 1 / TransPosed : W = (Win - 1) * S - 2P + F + OutP"""
-    def __init__(self, dim_in, dim_out):
+    def __init__(self, dim_in, dim_out, spec_norm=False):
         super(ResidualBlockDown, self).__init__()
 
-        self.stream1 = nn.Sequential(
-            SpectralNorm(nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1, bias=False)),
-            nn.AvgPool2d(kernel_size=2, stride=2),
-        )
-        self.stream2 = nn.Sequential(
-            nn.ReLU(),
-            nn.Conv2d(dim_in, dim_in, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.ReLU(),
-            SpectralNorm(nn.Conv2d(dim_in, dim_out, kernel_size=3, stride=1, padding=1, bias=False)),
-            nn.AvgPool2d(kernel_size=2, stride=2),
-        )
+        if spec_norm:
+            self.stream1 = nn.Sequential(
+                SpectralNorm(nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1, bias=False)),
+                nn.AvgPool2d(kernel_size=2, stride=2),
+            )
+            self.stream2 = nn.Sequential(
+                nn.ReLU(),
+                nn.Conv2d(dim_in, dim_in, kernel_size=3, stride=1, padding=1, bias=False),
+                nn.ReLU(),
+                SpectralNorm(nn.Conv2d(dim_in, dim_out, kernel_size=3, stride=1, padding=1, bias=False)),
+                nn.AvgPool2d(kernel_size=2, stride=2),
+            )
+        else:
+            self.stream1 = nn.Sequential(
+                nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1, bias=False),
+                nn.AvgPool2d(kernel_size=2, stride=2),
+            )
+            self.stream2 = nn.Sequential(
+                nn.ReLU(),
+                nn.Conv2d(dim_in, dim_in, kernel_size=3, stride=1, padding=1, bias=False),
+                nn.ReLU(),
+                nn.Conv2d(dim_in, dim_out, kernel_size=3, stride=1, padding=1, bias=False),
+                nn.AvgPool2d(kernel_size=2, stride=2),
+            )
 
     def forward(self, x):
         return self.stream1(x) + self.stream2(x)

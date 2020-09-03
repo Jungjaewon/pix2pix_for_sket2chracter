@@ -17,7 +17,7 @@ class DataSet(data.Dataset):
         self.data_list = glob.glob(os.path.join(self.img_dir, '*.png'))
         self.data_list = [x.split(os.sep)[-1].split('_')[0] for x in self.data_list]
         self.data_list = list(set(self.data_list))
-        random.seed(config['TRAINING_CONFIG']['CPU_SEED'])
+        #random.seed(config['TRAINING_CONFIG']['CPU_SEED'])
 
     def __getitem__(self, index):
         fid = self.data_list[index]

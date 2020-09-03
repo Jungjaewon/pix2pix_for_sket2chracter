@@ -40,8 +40,11 @@ class Solver(object):
 
         self.cpu_seed = config['TRAINING_CONFIG']['CPU_SEED']
         self.gpu_seed = config['TRAINING_CONFIG']['GPU_SEED']
-        torch.manual_seed(config['TRAINING_CONFIG']['CPU_SEED'])
-        torch.cuda.manual_seed_all(config['TRAINING_CONFIG']['GPU_SEED'])
+        #torch.manual_seed(config['TRAINING_CONFIG']['CPU_SEED'])
+        #torch.cuda.manual_seed_all(config['TRAINING_CONFIG']['GPU_SEED'])
+
+        self.g_spec = config['TRAINING_CONFIG']['G_SPEC'] == 'true'
+        self.d_spec = config['TRAINING_CONFIG']['D_SPEC'] == 'true'
 
         self.gpu = config['TRAINING_CONFIG']['GPU']
         self.use_tensorboard = config['TRAINING_CONFIG']['USE_TENSORBOARD']
@@ -67,9 +70,8 @@ class Solver(object):
 
     def build_model(self):
 
-
-        self.G = Generator().to(self.gpu)
-        self.D = Discriminator().to(self.gpu)
+        self.G = Generator(spec_norm=self.g_spec).to(self.gpu)
+        self.D = Discriminator(spec_norm=self.d_spec).to(self.gpu)
 
         self.g_optimizer = torch.optim.Adam(self.G.parameters(), self.g_lr, (self.beta1, self.beta2))
         self.d_optimizer = torch.optim.Adam(self.D.parameters(), self.d_lr, (self.beta1, self.beta2))
