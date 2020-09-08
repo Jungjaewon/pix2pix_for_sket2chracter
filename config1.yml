@@ -30,6 +30,9 @@ TRAINING_CONFIG:
   GPU_SEED : 456
   USE_TENSORBOARD : 'False' # 'True' or 'False'
 
+  # model type
+  MODEL_TYPE: 'res'
+
   #spectral norm
   G_SPEC : 'false'
   D_SPEC : 'true'

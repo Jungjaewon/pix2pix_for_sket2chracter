@@ -10,6 +10,12 @@ from torchvision import models
 from functools import reduce
 from model import Generator
 from model import Discriminator
+
+from res_model import Generator as rGenerator
+from res_model import Discriminator as rDiscriminator
+
+from unet import UNet
+
 from torchvision.utils import save_image
 
 
@@ -43,6 +49,8 @@ class Solver(object):
         #torch.manual_seed(config['TRAINING_CONFIG']['CPU_SEED'])
         #torch.cuda.manual_seed_all(config['TRAINING_CONFIG']['GPU_SEED'])
 
+        self.model_type = config['TRAINING_CONFIG']['MODEL_TYPE']
+
         self.g_spec = config['TRAINING_CONFIG']['G_SPEC'] == 'true'
         self.d_spec = config['TRAINING_CONFIG']['D_SPEC'] == 'true'
 
@@ -70,8 +78,15 @@ class Solver(object):
 
     def build_model(self):
 
-        self.G = Generator(spec_norm=self.g_spec).to(self.gpu)
-        self.D = Discriminator(spec_norm=self.d_spec).to(self.gpu)
+        if self.model_type == 'unet':
+            self.G = UNet(n_channels=3, n_classes=3)
+            self.D = rDiscriminator(spec_norm=self.d_spec).to(self.gpu)
+        elif self.model_type == 'res':
+            self.G = rGenerator(spec_norm=self.g_spec).to(self.gpu)
+            self.D = rDiscriminator(spec_norm=self.d_spec).to(self.gpu)
+        else:
+            self.G = Generator(spec_norm=self.g_spec).to(self.gpu)
+            self.D = Discriminator(spec_norm=self.d_spec).to(self.gpu)
 
         self.g_optimizer = torch.optim.Adam(self.G.parameters(), self.g_lr, (self.beta1, self.beta2))
         self.d_optimizer = torch.optim.Adam(self.D.parameters(), self.d_lr, (self.beta1, self.beta2))
@@ -84,7 +99,7 @@ class Solver(object):
         num_params = 0
         for p in model.parameters():
             num_params += p.numel()
-        print(model)
+        #print(model)
         print(name)
         print("The number of parameters: {}".format(num_params))
 
