@@ -18,7 +18,6 @@ class ConvDownBlock(nn.Module):
                 nn.LeakyReLU(0.01, inplace=False),
                 nn.Conv2d(dim_out, dim_out, kernel_size=4, stride=2, padding=1, bias=False),
                 nn.BatchNorm2d(dim_out, affine=True, track_running_stats=True),
-                nn.LeakyReLU(0.01, inplace=False),
             )
         else:
             self.main = nn.Sequential(
@@ -30,7 +29,6 @@ class ConvDownBlock(nn.Module):
                 nn.LeakyReLU(0.01, inplace=False),
                 SpectralNorm(nn.Conv2d(dim_out, dim_out, kernel_size=4, stride=2, padding=1, bias=False)),
                 nn.BatchNorm2d(dim_out, affine=True, track_running_stats=True),
-                nn.LeakyReLU(0.01, inplace=False),
             )
 
     def forward(self, x):
@@ -51,7 +49,6 @@ class ConvUpBlock(nn.Module):
                 nn.LeakyReLU(0.01, inplace=False),
                 nn.UpsamplingBilinear2d(scale_factor=2),
                 nn.BatchNorm2d(dim_out, affine=True, track_running_stats=True),
-                nn.LeakyReLU(0.01, inplace=False),
             )
         else:
             self.main = nn.Sequential(
@@ -63,7 +60,6 @@ class ConvUpBlock(nn.Module):
                 nn.LeakyReLU(0.01, inplace=False),
                 nn.UpsamplingBilinear2d(scale_factor=2),
                 nn.BatchNorm2d(dim_out, affine=True, track_running_stats=True),
-                nn.LeakyReLU(0.01, inplace=False),
             )
 
     def forward(self, x):
@@ -79,8 +75,7 @@ class ResidualBlock(nn.Module):
             nn.BatchNorm2d(dim_out, affine=True, track_running_stats=True),
             nn.LeakyReLU(0.01, inplace=False),
             nn.Conv2d(dim_out, dim_out, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(dim_out, affine=True, track_running_stats=True),
-            nn.LeakyReLU(0.01, inplace=False))
+            nn.BatchNorm2d(dim_out, affine=True, track_running_stats=True))
 
     def forward(self, x):
         return x + self.main(x)
