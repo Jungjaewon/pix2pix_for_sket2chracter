@@ -79,7 +79,7 @@ class Solver(object):
     def build_model(self):
 
         if self.model_type == 'unet':
-            self.G = UNet(n_channels=3, n_classes=3)
+            self.G = UNet(n_channels=3, n_classes=3).to(self.gpu)
             self.D = rDiscriminator(spec_norm=self.d_spec).to(self.gpu)
         elif self.model_type == 'res':
             self.G = rGenerator(spec_norm=self.g_spec).to(self.gpu)
