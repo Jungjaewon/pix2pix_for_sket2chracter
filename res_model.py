@@ -18,6 +18,8 @@ class Generator(nn.Module):
         self.main.append(ResidualBlock(256, 256))  # 64 -> 32
         self.main.append(ResidualBlock(256, 256))  # 64 -> 32
         self.main.append(ResidualBlock(256, 256))  # 64 -> 32
+        self.main.append(ResidualBlock(256, 256))  # 64 -> 32
+        self.main.append(ResidualBlock(256, 256))  # 64 -> 32
 
         self.main.append(ConvUpBlock(256, 128, spec_norm))  # 32 -> 64
         self.main.append(ConvUpBlock(128, 64, spec_norm))  # 64 -> 128
