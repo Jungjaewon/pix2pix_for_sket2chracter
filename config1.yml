@@ -39,7 +39,7 @@ TRAINING_CONFIG:
 
   # Directory
   IMG_DIR : 'data'
-  TRAIN_DIR : 'unet_gan1'
+  TRAIN_DIR : 'res_gan'
   LOG_DIR : 'logs'
   SAMPLE_DIR : 'samples'
   RESULT_DIR : 'results'
