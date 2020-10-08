@@ -1,13 +1,9 @@
 
 import os
 import time
-import operator
 import datetime
 import torch
-import torch.nn as nn
 
-from torchvision import models
-from functools import reduce
 from model import Generator
 from model import Discriminator
 
@@ -15,7 +11,6 @@ from res_model import Generator as rGenerator
 from res_model import Discriminator as rDiscriminator
 
 from unet import UNet
-
 from torchvision.utils import save_image
 
 

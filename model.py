@@ -1,5 +1,4 @@
 import torch.nn as nn
-import torch
 
 from block import ResidualBlockDown
 from block import ResidualBlockUp
